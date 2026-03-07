@@ -1,0 +1,35 @@
+{
+  "skill_name": "yt-transcribe",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "transcribe this https://www.youtube.com/watch?v=yLhnJMM464c",
+      "expected_output": "Should return metadata (title: Claude Skills 2.0, channel: Duncan Rogoff, duration: 9:17) and a cleaned transcript mentioning skill-creator, meeting notes, Claude Code",
+      "assertions": [
+        {"name": "has_title", "type": "contains", "value": "Claude Skills"},
+        {"name": "has_transcript", "type": "contains", "value": "skill"},
+        {"name": "no_timestamps", "type": "not_contains", "value": "00:00:"},
+        {"name": "has_takeaways", "type": "contains", "value": "takeaway"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "what does this video say? https://youtu.be/dQw4w9WgXcQ",
+      "expected_output": "Should handle youtu.be short URLs and extract captions from Rick Astley - Never Gonna Give You Up",
+      "assertions": [
+        {"name": "handles_short_url", "type": "not_contains", "value": "ERROR"},
+        {"name": "produces_output", "type": "not_empty"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "can you transcribe this youtube video and tell me the key points? https://www.youtube.com/watch?v=aircAruvnKk",
+      "expected_output": "Should transcribe 3Blue1Brown neural network video, provide metadata and key takeaways about neural networks",
+      "assertions": [
+        {"name": "has_metadata", "type": "contains", "value": "Channel"},
+        {"name": "has_summary", "type": "contains", "value": "neural"},
+        {"name": "no_crash", "type": "not_contains", "value": "Traceback"}
+      ]
+    }
+  ]
+}

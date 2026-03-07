@@ -1,0 +1,33 @@
+{
+  "skill_name": "fb-read",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "what does this post say? https://www.facebook.com/sayan.nanta.1/posts/pfbid026BBXU4f3Wy6UXooJBgUu1bKFANCZesCDPJ3HazaZ5bPMbng9Exg2xpGHV8WF3UKTl",
+      "expected_output": "Should extract Thai text about @googleworkspace/cli (gws), including bullet points about features and hashtags like #GoogleWorkspace #CLI #Developers",
+      "assertions": [
+        {"name": "extracts_text", "type": "contains", "value": "gws"},
+        {"name": "finds_hashtags", "type": "contains", "value": "#GoogleWorkspace"},
+        {"name": "handles_thai", "type": "contains", "value": "Google Workspace"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "read this fb post https://www.facebook.com/zaborarna/posts/pfbid02FJevz2qx9KhkxHM9kFiPVuUPCejL7YNRMtFhJ5iuqhGCiQu87TUYFdN3YgQWgQ4l",
+      "expected_output": "Should extract post text or report that the post is not public",
+      "assertions": [
+        {"name": "no_crash", "type": "not_contains", "value": "Traceback"},
+        {"name": "produces_output", "type": "not_empty"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "someone shared this on facebook, can you check what it's about? https://www.facebook.com/NationalGeographic/posts/pfbid02KfYvhbYHBUHKGn8TF9LXrSCwSX3xyGbHFVq1WkG7vXmAi7K7k4kGVmjkXiEDXHpl",
+      "expected_output": "Should extract text from National Geographic public page post",
+      "assertions": [
+        {"name": "no_crash", "type": "not_contains", "value": "Traceback"},
+        {"name": "produces_output", "type": "not_empty"}
+      ]
+    }
+  ]
+}
