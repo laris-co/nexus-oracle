@@ -1,0 +1,16 @@
+name: Auto-add issues to Pulse Inbox
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-to-inbox:
+    runs-on: self-hosted
+    steps:
+      - name: Add issue to Pulse Inbox Board
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh project item-add 8 --owner laris-co --url "${{ github.event.issue.html_url }}" || true
+          echo "Added ${{ github.event.issue.title }} to Pulse Inbox"
