@@ -1,17 +1,21 @@
-name: Auto-add issues to Pulse Inbox
+name: Auto-add to Pulse Inbox
 
 on:
   issues:
+    types: [opened]
+  pull_request:
     types: [opened]
 
 jobs:
   add-to-inbox:
     runs-on: self-hosted
     steps:
-      - name: Add issue to Pulse Inbox Board
+      - name: Add to Pulse Inbox Board
         env:
           GH_TOKEN: ${{ secrets.PULSE_TOKEN }}
         run: |
           export PATH="/usr/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
-          gh project item-add 8 --owner laris-co --url "${{ github.event.issue.html_url }}" || true
-          echo "Added ${{ github.event.issue.title }} to Pulse Inbox"
+          URL="${{ github.event.issue.html_url || github.event.pull_request.html_url }}"
+          TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
+          gh project item-add 8 --owner laris-co --url "$URL" || true
+          echo "Added $TITLE to Pulse Inbox"
