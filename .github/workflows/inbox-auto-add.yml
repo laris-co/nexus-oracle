@@ -11,6 +11,7 @@ jobs:
       - name: Add issue to Pulse Inbox Board
         env:
           GH_TOKEN: ${{ secrets.PULSE_TOKEN }}
+          PATH: /opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:${{ env.PATH }}
         run: |
           gh project item-add 8 --owner laris-co --url "${{ github.event.issue.html_url }}" || true
           echo "Added ${{ github.event.issue.title }} to Pulse Inbox"
