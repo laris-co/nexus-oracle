@@ -2,14 +2,14 @@ name: Auto-add to Pulse Inbox
 
 on:
   issues:
-    types: [opened]
+    types: [opened, closed]
   pull_request:
     types: [opened, closed]
 
 jobs:
   add-to-inbox:
     if: >-
-      github.event_name == 'issues' ||
+      (github.event_name == 'issues' && github.event.action == 'opened') ||
       (github.event_name == 'pull_request' && github.event.action == 'opened')
     runs-on: self-hosted
     steps:
@@ -22,6 +22,22 @@ jobs:
           TITLE="${{ github.event.issue.title || github.event.pull_request.title }}"
           gh project item-add 8 --owner laris-co --url "$URL" || true
           echo "Added $TITLE to Pulse Inbox"
+
+  notify-issue-closed:
+    if: >-
+      github.event_name == 'issues' &&
+      github.event.action == 'closed'
+    runs-on: self-hosted
+    steps:
+      - name: Notify Pulse of closed issue
+        run: |
+          export PATH="/usr/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+          REPO="${{ github.repository }}"
+          NUM="#${{ github.event.issue.number }}"
+          TITLE="${{ github.event.issue.title }}"
+          URL="${{ github.event.issue.html_url }}"
+          maw hey pulse-oracle "Issue closed: ${REPO} ${NUM} — ${TITLE} ${URL} — GitHub Actions" || true
+          echo "Notified Pulse: ${REPO} ${NUM} closed"
 
   notify-pr-merged:
     if: >-
