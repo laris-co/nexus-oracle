@@ -84,7 +84,28 @@ Write the full blog following the pattern above. Aim for:
 
 Match length to depth of content. Don't pad.
 
-### Step 4: Save and present
+### Step 4: Auto-log to Feed
+
+After saving the blog, append a signal entry to the Nexus feed:
+
+```
+Feed file: ψ/feed/YYYY-MM-DD.md (today's date)
+```
+
+Entry format:
+```markdown
+## HH:MM | blog | [Blog title (Thai)]
+
+- **Source**: [ψ/writing/blog-slug.md]
+- **Tags**: [topic tags from blog content]
+- **Signal**: [What this blog covers in 1-2 lines]
+
+---
+```
+
+Create the daily file with header if it doesn't exist yet. Always append — never overwrite.
+
+### Step 5: Save and present
 
 Write to `ψ/writing/blog-[slug].md` and show the user the draft. Ask if they want to edit before committing.
 

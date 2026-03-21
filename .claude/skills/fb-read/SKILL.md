@@ -22,10 +22,15 @@ The script outputs the post's text content, with hashtags listed separately at t
 
 Once you have the text, provide the user with:
 
-1. **The full post text** — display it clearly
-2. **Key topics** — what is the post about?
-3. **Hashtags** — if present, list them
-4. **Brief analysis** — who posted it, what's the main message, any links mentioned
+1. **Metadata header** — always show date/time and original link:
+   ```
+   **Source**: [original FB URL]
+   **Fetched**: YYYY-MM-DD HH:MM ICT
+   ```
+2. **The full post text** — display it clearly
+3. **Key topics** — what is the post about?
+4. **Hashtags** — if present, list them
+5. **Brief analysis** — who posted it, what's the main message, any links mentioned
 
 ## When things go wrong
 
@@ -36,3 +41,24 @@ Once you have the text, provide the user with:
 ## What this can and cannot do
 
 This reads **text only** from **public posts**. It cannot access comments, reactions, share counts, images, or videos. It also cannot read posts from private profiles or closed groups.
+
+## Auto-log to Feed
+
+After presenting the post to the user, append a signal entry to the Nexus feed:
+
+```
+Feed file: ψ/feed/YYYY-MM-DD.md (today's date)
+```
+
+Entry format:
+```markdown
+## HH:MM | fb | [Post author or topic]
+
+- **Source**: [original FB URL]
+- **Tags**: [hashtags from post + inferred topic tags]
+- **Signal**: [1-2 line summary of what matters]
+
+---
+```
+
+Create the daily file with header if it doesn't exist yet. Always append — never overwrite.

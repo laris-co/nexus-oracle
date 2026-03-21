@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+._*
+
+# Untracked brain dirs
+ψ/active/
+ψ/learn/
+ψ/memory/logs/

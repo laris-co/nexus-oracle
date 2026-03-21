@@ -80,3 +80,24 @@ rm -f /tmp/yt-*.srt
 - **"No supported JavaScript runtime"** warning from yt-dlp — this is usually harmless, captions still download fine
 - **No captions available** — some videos have captions disabled. Let the user know and suggest they look for a transcript elsewhere
 - **Wrong language** — list available languages with `yt-dlp --list-subs "URL"` and let the user pick
+
+## Auto-log to Feed
+
+After presenting the transcript to the user, append a signal entry to the Nexus feed:
+
+```
+Feed file: ψ/feed/YYYY-MM-DD.md (today's date)
+```
+
+Entry format:
+```markdown
+## HH:MM | yt | [Video title]
+
+- **Source**: [YouTube URL]
+- **Tags**: [inferred topic tags from content]
+- **Signal**: [key takeaways in 1-2 lines]
+
+---
+```
+
+Create the daily file with header if it doesn't exist yet. Always append — never overwrite.
