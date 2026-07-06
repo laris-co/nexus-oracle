@@ -1,0 +1,16 @@
+---
+pattern: "MCP server-building taxonomy settled (2 transports, 3 primitives but ~1.5 used, 5 architecture patterns) — and the earlier 'add MCP-import to arra-oracle-v3' idea is overturned: federation is a distinct gateway product category, not a bolt-on feature. Recommendation: build Streamable HTTP transport first, not federation."
+date: 2026-07-06
+source: "/workflows deep-research: 5 parallel Sonnet agents (SDK survey, taxonomy, resources/prompts usage, best practices, build-option comparison) + synthesis"
+concepts: ["mcp", "arra-oracle-v3", "streamable-http", "federation", "taxonomy", "build-decision"]
+---
+
+# Learned: MCP building taxonomy, and a course-correction on arra-oracle-v3's next feature
+
+- **Taxonomy settles cleanly**: 2 transports (stdio, Streamable HTTP — SSE is deprecated everywhere), 3 spec primitives but only tools are really used (~90%+; resources modest niche; prompts rarest, mostly reference/demo servers), ~11 functional categories collapsing into 5 architecture patterns (Resource Gateway, Stateful Session Server, Proxy/Aggregator, Tool Orchestrator, Domain-Specific Adapter, per arXiv 2606.30317). Gateway/aggregation is the one category still genuinely contested (17+ competing tools, no winner) — everything else is settled.
+- **Course-correction on arra-oracle-v3's roadmap**: earlier in this research arc, "add an mcpImports-style feature so arra-oracle-v3 can auto-import external MCP servers' tools" was floated as the key gap to close (see [[project_arra-config-federation-key-insight]]). This research overturns that: every real federation implementation found (MetaMCP, mcp-aggregator, agentgateway, Kong) is built as a **dedicated gateway product**, never retrofitted as a feature into a single-purpose server. Building federation into arra-oracle-v3 now would mean redoing it once ecosystem patterns settle — it isn't needed until arra-oracle-v3 is itself reachable remotely with consumers wanting to route through it.
+- **arra-oracle-v3's tools-only design (no resources/prompts) is ecosystem-normal**, not a gap — confirmed independently across the official servers repo and community surveys. No primitive-coverage fix needed before shipping anything.
+- **Concrete recommendation, validated with real precedent**: build Streamable HTTP transport for arra-oracle-v3 first (not federation) — the SDK dependency is already installed and unused, so this is "finish wiring up something already there," not new R&D. Smallest first step: a second transport instance mounted at `/mcp`, gated behind a hard-coded API-key middleware, running alongside (not replacing) the existing stdio transport, stateless-only to start.
+- **Auth is the make-or-break gap for any production remote MCP server** — CVE-2025-6514 (mcp-remote RCE via unsanitized OAuth redirects) is cited as a live cautionary tale, reinforcing the earlier session finding that transport and auth must ship together.
+
+Why this matters: this closes the "should we research MCP-building more, or just build something" question from earlier in the session — the answer is proceed to build, and specifically build Streamable HTTP, not the federation feature previously assumed to be the target. Full report: `ψ/writing/2026-07-06/mcp-building-taxonomy-and-recommendation.md`.
