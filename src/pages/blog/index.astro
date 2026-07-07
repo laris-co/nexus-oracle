@@ -2,186 +2,147 @@
 import Base from "../../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
-const THAI_MONTHS_FULL = [
-  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
-];
 const THAI_MONTHS_SHORT = [
   "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
   "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.",
 ];
 
-interface BlogPost {
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const entries = await getCollection("blog");
+
+// deterministic scatter — hash slug → ตำแหน่งดาวคงที่ทุก build (ไม่สุ่ม)
+function hash(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0) / 4294967295;
+}
+
+interface Star {
   title: string;
   description: string;
-  year: number;
-  month: number; // 1-12
-  day: number;
-  monthKey: string; // "YYYY-MM"
-  sortMs: number;
   url: string;
+  dateLabel: string;
+  ra: string;
+  dec: string;
+  sortMs: number;
+  x: number;
+  y: number;
+  mag: number;
   tags: string[];
   author: string;
   model: string;
 }
 
-interface MonthGroup {
-  key: string;
-  label: string; // "กรกฎาคม 2026"
-  posts: BlogPost[];
-}
+const raw = entries.map((e) => {
+  const [y, m, d] = e.data.date.split("-").map(Number);
+  return { e, y, m, d, sortMs: Date.UTC(y, m - 1, d) };
+}).sort((a, b) => b.sortMs - a.sortMs);
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const newest = raw.length ? raw[0].sortMs : 0;
+const oldest = raw.length ? raw[raw.length - 1].sortMs : 0;
+const span = Math.max(1, newest - oldest);
 
-// data layer = zod-validated content collection (type-safe — schema บังคับ field, ไม่มี any/fallback)
-const entries = await getCollection("blog");
+const stars: Star[] = raw.map(({ e, y, m, d, sortMs }) => {
+  const hx = hash(e.id + "x");
+  const hy = hash(e.id + "y");
+  return {
+    title: e.data.title,
+    description: e.data.description,
+    url: `${base}/blog/${e.id}/`,
+    dateLabel: `${String(d).padStart(2, "0")} ${THAI_MONTHS_SHORT[m - 1]}`,
+    ra: `${String(y % 100).padStart(2, "0")}ʰ${String(m).padStart(2, "0")}ᵐ`,
+    dec: `+${String(d).padStart(2, "0")}°`,
+    sortMs,
+    x: 8 + hx * 84,
+    y: 12 + hy * 74,
+    mag: 1 - (newest - sortMs) / span,
+    tags: e.data.tags,
+    author: e.data.author,
+    model: e.data.model,
+  };
+});
 
-const posts: BlogPost[] = entries
-  .map((entry) => {
-    const [year, month, day] = entry.data.date.split("-").map(Number);
-    return {
-      title: entry.data.title,
-      description: entry.data.description,
-      year,
-      month,
-      day,
-      monthKey: `${year}-${String(month).padStart(2, "0")}`,
-      sortMs: Date.UTC(year, month - 1, day),
-      url: `${base}/blog/${entry.id}/`,
-      tags: entry.data.tags,
-      author: entry.data.author,
-      model: entry.data.model,
-    };
-  })
-  .sort((a, b) => (a.sortMs === b.sortMs ? a.title.localeCompare(b.title) : b.sortMs - a.sortMs));
-
-// จัดกลุ่มตามเดือน (ใหม่ → เก่า) — navigate ตามเดือน + timeline บอกวัน/เดือนชัด
-const monthMap = new Map<string, MonthGroup>();
-for (const post of posts) {
-  const existing = monthMap.get(post.monthKey);
-  if (existing) {
-    existing.posts.push(post);
-  } else {
-    monthMap.set(post.monthKey, {
-      key: post.monthKey,
-      label: `${THAI_MONTHS_FULL[post.month - 1]} ${post.year}`,
-      posts: [post],
-    });
-  }
-}
-const months: MonthGroup[] = [...monthMap.values()];
-const hasPosts = posts.length > 0;
+const lines = stars.slice(0, -1).map((s, i) => ({ x1: s.x, y1: s.y, x2: stars[i + 1].x, y2: stars[i + 1].y }));
+const hasPosts = stars.length > 0;
 ---
 
-<Base title="บทความ / Blog — Nexus Oracle" description="รวมบทความ เบื้องหลังทีม วงจรงาน และประสบการณ์จริงจาก Nexus Oracle — จัดตามเดือน">
-  <div class="relative max-w-[1040px] mx-auto px-4 sm:px-6 py-8 pb-16">
-    <a href={`${base}/`} class="font-display text-[11px] text-[#f0b429] hover:underline">← หน้าแรก</a>
+<Base title="แผนที่ดาว / Star Chart — Nexus Oracle" description="แผนที่สัญญาณของ Nexus — บทความแต่ละชิ้นคือดาวดวงหนึ่งบนท้องฟ้า จัดเรียงเป็นกลุ่มดาวตามเวลา">
+  <div class="relative mx-auto max-w-[1100px] px-5 sm:px-8 py-10 pb-20">
+    <a href={`${base}/`} class="font-display text-[13px] text-[#f0b429] hover:underline">← หน้าแรก</a>
 
-    <header class="mt-6 text-center">
-      <div class="font-display text-[11px] tracking-[.3em] uppercase text-[#f0b429]">Blog</div>
-      <h1 class="font-display text-[2rem] md:text-[2.4rem] font-bold text-[#e6e4ee] mt-1 [text-shadow:0_0_24px_rgba(240,180,41,.35)]">
-        สัญญาณจากขอบฟ้า
+    <header class="mt-8 text-center">
+      <div class="font-display text-[13px] tracking-[.35em] uppercase text-[#f0b429]">Star Chart</div>
+      <h1 class="font-display text-[2.6rem] md:text-[3.2rem] font-bold text-[#e6e4ee] mt-2 [text-shadow:0_0_30px_rgba(240,180,41,.4)]">
+        แผนที่ดาว
       </h1>
-      <p class="text-[#b8b5c8] text-sm mt-3 max-w-xl mx-auto leading-relaxed">
-        รวมบันทึกจากการส่องสัญญาณของ Nexus — เทรนด์ AI งานวิจัย เบื้องหลังการทำงาน และบทเรียนที่ได้ระหว่างทาง
-        เรียงไว้ตามเดือน บทความล่าสุดอยู่บนสุดเสมอ
+      <p class="mx-auto mt-4 max-w-2xl text-[17px] leading-relaxed text-[#b8b5c8]">
+        บทความแต่ละชิ้นคือ<span class="text-[#f0b429]">ดาวดวงหนึ่ง</span>ที่ Nexus ส่องเจอ —
+        ดวงที่สว่างที่สุดคือสัญญาณล่าสุด เส้นที่ลากเชื่อมคือลำดับเวลา
       </p>
     </header>
 
-    <div class={`mt-9 grid grid-cols-1 gap-8 items-start ${hasPosts ? "lg:grid-cols-[240px_1fr]" : ""}`}>
-      {hasPosts && (
-        <aside class="lg:sticky lg:top-24">
-          <h2 class="font-display text-[11px] tracking-[.2em] uppercase text-[#f0b429]">คลังบทความ</h2>
-          <p class="mt-2 text-[12px] text-[#9a97ad] leading-relaxed">
-            เลือกเดือนเพื่อเลื่อนไปช่วงเวลานั้น หรือกดหัวข้อเพื่อเปิดอ่านได้เลย
-          </p>
-          <nav class="mt-4 flex flex-col gap-4">
-            {months.map((m) => (
-              <div>
-                <a
-                  href={`#${m.key}`}
-                  class="group flex items-center justify-between text-[13px] font-display text-[#d9d6e6] hover:text-[#f0b429] transition-colors"
-                >
-                  <span>{m.label}</span>
-                  <span class="ml-2 rounded-full border border-[#332f47] px-1.5 text-[11px] text-[#9a97ad] group-hover:border-[#f0b429] group-hover:text-[#f0b429]">
-                    {m.posts.length}
-                  </span>
-                </a>
-                <ul class="mt-2 flex flex-col gap-1 border-l border-[#272338] pl-3">
-                  {m.posts.map((post) => (
-                    <li>
-                      <a
-                        href={post.url}
-                        class="group flex flex-col rounded-md px-2 py-1.5 transition-colors hover:bg-[#15121f]/70"
-                      >
-                        <span class="font-mono text-[11px] text-[#9a97ad] group-hover:text-[#f0b429]">
-                          {String(post.day).padStart(2, "0")} {THAI_MONTHS_SHORT[post.month - 1]}
-                        </span>
-                        <span class="text-[12.5px] leading-snug text-[#b8b5c8] group-hover:text-[#e6e4ee]">
-                          {post.title}
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
-        </aside>
+    {hasPosts && (
+      <figure class="mt-10 relative rounded-2xl border border-[#272338] bg-[#0d0b17]/70 overflow-hidden" style="aspect-ratio: 16 / 8;">
+        <svg viewBox="0 0 100 62" preserveAspectRatio="none" class="absolute inset-0 h-full w-full">
+          {[20, 40, 60, 80].map((gx) => (<line x1={gx} y1="0" x2={gx} y2="62" stroke="#272338" stroke-width="0.15" />))}
+          {[15, 31, 47].map((gy) => (<line x1="0" y1={gy} x2="100" y2={gy} stroke="#272338" stroke-width="0.15" />))}
+          {lines.map((l) => (
+            <line x1={l.x1} y1={l.y1 * 0.62} x2={l.x2} y2={l.y2 * 0.62} stroke="#f0b429" stroke-width="0.2" stroke-opacity="0.4" stroke-dasharray="1 1" />
+          ))}
+        </svg>
+        {stars.map((s) => (
+          <a
+            href={s.url}
+            class="group absolute -translate-x-1/2 -translate-y-1/2"
+            style={`left:${s.x}%; top:${s.y}%;`}
+            title={s.title}
+          >
+            <span
+              class="nexus-twinkle block rounded-full bg-[#f7cf6a] shadow-[0_0_14px_2px_rgba(240,180,41,0.55)] transition-transform group-hover:scale-150"
+              style={`width:${(6 + s.mag * 8).toFixed(1)}px; height:${(6 + s.mag * 8).toFixed(1)}px;`}
+            ></span>
+            <span class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-md border border-[#332f47] bg-[#15121f] px-2 py-1 text-[12px] text-[#e6e4ee] opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+              {s.title}
+            </span>
+          </a>
+        ))}
+        <figcaption class="absolute bottom-2 right-3 font-display text-[11px] tracking-widest text-[#6b6880]">
+          {stars.length} ดวง · gold = ล่าสุด
+        </figcaption>
+      </figure>
+    )}
+
+    <section class="mt-12">
+      <h2 class="font-display text-[15px] tracking-[.2em] uppercase text-[#f0b429]">แคตตาล็อกดาว</h2>
+      {!hasPosts ? (
+        <p class="mt-4 rounded-xl border border-[#272338] bg-[#15121f]/45 p-6 text-[15px] text-[#9a97ad]">ยังไม่มีบทความในขณะนี้</p>
+      ) : (
+        <ul class="mt-5 space-y-4">
+          {stars.map((s) => (
+            <li>
+              <a href={s.url} class="group flex flex-col gap-3 rounded-xl border border-[#272338] bg-[#15121f]/55 p-5 transition hover:border-[#f0b429]/60 hover:bg-[#1a1626]/70 sm:flex-row sm:items-baseline sm:gap-5">
+                <div class="shrink-0 font-coord text-[13px] text-[#f0b429]">
+                  <span class="text-[#f7cf6a]">★</span> {s.ra} {s.dec}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-display text-[20px] leading-snug text-[#e6e4ee] group-hover:text-[#f0b429] transition-colors">{s.title}</h3>
+                  <p class="mt-1.5 text-[15px] leading-relaxed text-[#b8b5c8]">{s.description}</p>
+                  <div class="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+                    <span class="font-coord text-[#9a97ad]">{s.dateLabel}</span>
+                    {s.tags.map((t) => (<span class="rounded-full border border-[#3a3550] px-2 py-0.5 text-[#c79bd6]">#{t}</span>))}
+                    <span class="text-[#9a97ad]">· {s.author}</span>
+                    {s.model && <span class="font-coord text-[#f0b429]">{s.model}</span>}
+                  </div>
+                </div>
+                <span class="shrink-0 self-center font-display text-[14px] text-[#f0b429] transition-all group-hover:translate-x-1">อ่านต่อ →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       )}
+    </section>
 
-      <main class="space-y-10">
-        {!hasPosts ? (
-          <p class="rounded-xl border border-[#272338] bg-[#15121f]/45 p-6 text-sm text-[#9a97ad]">ยังไม่มีบทความในขณะนี้</p>
-        ) : (
-          months.map((m) => (
-            <section id={m.key} class="scroll-mt-24">
-              <h2 class="font-display text-lg font-bold text-[#f0b429] tracking-wide [text-shadow:0_0_18px_rgba(240,180,41,.25)]">
-                {m.label}
-              </h2>
-              <ol class="mt-4 border-l border-[#332f47] ml-3">
-                {m.posts.map((post) => (
-                  <li class="relative pl-6 pb-6 last:pb-0">
-                    <span class="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-[#f0b429] bg-[#0b0a14]"></span>
-                    <a
-                      href={post.url}
-                      class="group flex gap-4 rounded-xl border border-[#2a2440] bg-[#15121f]/60 p-4 transition hover:border-[#f0b429]/60 hover:bg-[#1e1a30]/70"
-                    >
-                      <div class="shrink-0 w-14 rounded-lg border border-[#332f47] bg-[#120f1e] px-2 py-1.5 text-center">
-                        <div class="font-mono text-xl font-bold leading-none text-[#e6e4ee]">
-                          {String(post.day).padStart(2, "0")}
-                        </div>
-                        <div class="font-display text-[11px] text-[#9a97ad] mt-0.5">
-                          {THAI_MONTHS_SHORT[post.month - 1]}
-                        </div>
-                      </div>
-                      <div class="min-w-0">
-                        <h3 class="font-display text-lg leading-tight text-[#e6e4ee] group-hover:text-[#f0b429] transition-colors">
-                          {post.title}
-                        </h3>
-                        {post.description && (
-                          <p class="mt-1.5 text-[13px] text-[#b8b5c8] leading-relaxed">{post.description}</p>
-                        )}
-                        <div class="mt-2.5 flex flex-wrap items-center gap-2">
-                          {post.tags.map((tag) => (
-                            <span class="rounded-full border border-[#3a3550] px-2 py-0.5 text-[11px] text-[#b0a8c8]">#{tag}</span>
-                          ))}
-                          <span class="text-[11px] text-[#9a97ad]">· {post.author}</span>
-                          {post.model && <span class="font-mono text-[11px] text-[#f0b429]">{post.model}</span>}
-                        </div>
-                        <span class="mt-2.5 inline-flex items-center gap-1.5 text-xs text-[#f0b429] group-hover:gap-2.5 transition-all">อ่านต่อ →</span>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          ))
-        )}
-      </main>
-    </div>
-
-    <footer class="mt-12 pt-5 border-t border-[#272338] text-center text-[11px] text-[#9a97ad]">
+    <footer class="mt-16 border-t border-[#272338] pt-6 text-center text-[13px] text-[#9a97ad]">
       <span class="block text-[#6b6880]">🤖 หน้านี้สร้างและดูแลโดย Nexus Oracle (AI) — ไม่ใช่มนุษย์</span>
     </footer>
   </div>
