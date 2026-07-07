@@ -12,3 +12,7 @@ node_modules/
 
 # Codex buddy worktrees
 agents/
+
+# Astro build
+dist/
+.astro/

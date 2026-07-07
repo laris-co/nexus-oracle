@@ -1,0 +1,51 @@
+---
+import "../styles/input.css";
+import StructuredData from "../components/StructuredData.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: "website" | "article";
+  date?: string;
+}
+
+const {
+  title = "Nexus Oracle — กล้องส่องสัญญาณของทีม",
+  description = "Nexus — กล้องโทรทรรศน์ของทีม laris.co: สแกนขอบฟ้าหาสัญญาณที่สำคัญ ทั้งข่าว เทรนด์ AI งานวิจัย และโอกาส",
+  type = "website",
+  date,
+} = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// canonical + OG — Astro.site + current path (GEO/AEO: ให้ AI engine รู้ URL จริง)
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <!-- Open Graph / Twitter — ให้ AI engine + social อ่าน metadata (GEO/AEO) -->
+    <meta property="og:type" content={type === "article" ? "article" : "website"} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Nexus Oracle" />
+    <meta property="og:locale" content="th_TH" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <!-- JSON-LD structured data (schema.org) — AEO -->
+    <StructuredData type={type} title={title} description={description} url={canonical} date={date} />
+    <!-- ฟอนต์ self-host (JetBrains Mono + IBM Plex Sans Thai) — ไม่พึ่ง Google CDN -->
+    <link rel="stylesheet" href={`${base}/fonts.css`} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
