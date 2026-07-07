@@ -1,65 +1,100 @@
 @import "tailwindcss" source(none);
-/* scan Astro pages/layouts + React islands + lesson data (LEVELS.color arbitrary classes) */
 @source "../components/";
 @source "../pages/";
 @source "../layouts/";
-@source "../data/";
+@source "../content/";
+
+/* ═══════════════════════════════════════════════════════════════
+   NEXUS "DEEP FIELD" — อัตลักษณ์ของ nexus เอง (ไม่ลอก kru32)
+   telescope observatory: near-black deep-field sky · starlight gold ·
+   nebula magenta · reticle/crosshair motif · หัวข้อ Plex Sans Thai
+   ═══════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* หัว/เลข/label = JetBrains Mono (teaching/terminal vibe); ไทย fallback เป็น Sans Thai */
-  --font-display: "JetBrains Mono", "IBM Plex Sans Thai", ui-monospace, Menlo, monospace;
+  /* หัวข้อ = Plex Sans Thai bold (สังเกตการณ์/สะอาด) — คนละบุคลิกกับ kru32 mono */
+  --font-display: "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  --font-coord: "JetBrains Mono", ui-monospace, Menlo, monospace;
 }
 
-/* ── Van Gogh palette ──
-   cobalt ground แทน near-black · chrome-yellow แทน cyan · cream แทน steel text */
+:root {
+  --bg: #0b0a14;          /* deep field — near-black violet (ไม่ใช่ cobalt) */
+  --bg-panel: #15121f;    /* panel/card */
+  --ink: #e6e4ee;         /* starlight — ตัวอ่านหลัก */
+  --ink-dim: #9a97ad;     /* หมอกดาว */
+  --ink-faint: #6b6880;
+  --gold: #f0b429;        /* starlight/brass — accent หลัก (แทน cyan) */
+  --gold-soft: #f7cf6a;
+  --magenta: #c14bd6;     /* nebula signal — accent รอง */
+  --line: #272338;        /* เส้นขอบ */
+  --line-soft: #1c1930;
+}
+
 body {
-  background: #0b1b39; /* deep cobalt (Starry Night ground) */
-  color: #e8e2d0;      /* warm cream — ตัวอ่าน */
+  background: var(--bg);
+  color: var(--ink);
   font-family: "IBM Plex Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 
-/* nebula → แสงเทียนอุ่นสองดวง (yellow window + cobalt depth) ไล่เฉดใต้ flow-field */
+/* ── deep-field glow: nebula สองดวง (gold บน + magenta ล่าง) ── */
 body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 40% at 82% 8%, rgba(240, 180, 41, 0.10), transparent 66%),
+    radial-gradient(ellipse 60% 48% at 12% 92%, rgba(193, 75, 214, 0.12), transparent 70%),
+    radial-gradient(ellipse 38% 30% at 50% 50%, rgba(240, 180, 41, 0.04), transparent 72%);
+}
+
+/* ── starfield: จุดดาวจาง ๆ ทั่วหน้า (motif กล้องส่องดาว) ── */
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 55% 45% at 80% 12%, rgba(246, 197, 68, 0.10), transparent 68%),
-    radial-gradient(ellipse 65% 50% at 10% 88%, rgba(43, 108, 176, 0.22), transparent 70%),
-    radial-gradient(ellipse 40% 30% at 45% 45%, rgba(120, 158, 214, 0.06), transparent 70%);
+  opacity: 0.5;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(230, 228, 238, 0.7), transparent),
+    radial-gradient(1px 1px at 65% 15%, rgba(230, 228, 238, 0.5), transparent),
+    radial-gradient(1px 1px at 40% 70%, rgba(247, 207, 106, 0.6), transparent),
+    radial-gradient(1px 1px at 85% 55%, rgba(230, 228, 238, 0.55), transparent),
+    radial-gradient(1px 1px at 12% 80%, rgba(230, 228, 238, 0.4), transparent),
+    radial-gradient(1px 1px at 75% 88%, rgba(193, 75, 214, 0.5), transparent),
+    radial-gradient(1px 1px at 55% 40%, rgba(230, 228, 238, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 30% 18%, rgba(247, 207, 106, 0.55), transparent),
+    radial-gradient(1px 1px at 92% 25%, rgba(230, 228, 238, 0.4), transparent);
+  background-size: 100% 100%;
 }
 
-/* impasto — canvas paper grain บาง ๆ ทับทั้งหน้า ให้ผิวเหมือนภาพวาด ไม่ใช่ vector แบน */
-body::after {
-  content: "";
+/* ── reticle: เส้นเล็งกล้อง (crosshair) จาง ๆ กลางหน้าจอ ── */
+.nexus-reticle {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), rgba(240, 180, 41, 0.05) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), rgba(240, 180, 41, 0.05) 50%, transparent calc(50% + 0.5px));
 }
 
-/* scanline (เดิม) → soft lamp-glow กวาดใน device แทน — อุ่นแบบเทียน ไม่ใช่ CRT */
-@keyframes kru-scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(360px); }
+/* ── ดาวกะพริบช้า ๆ (signal pulse) ── */
+@keyframes nexus-twinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.65; }
 }
-.kru-scan {
-  animation: kru-scan 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+.nexus-twinkle { animation: nexus-twinkle 5s ease-in-out infinite; }
 
-/* ปุ่ม Flash = แสงเทียนเต้น (chrome-yellow halo) จุดสว่างเดียวของหน้า */
-@keyframes kru-pulse {
-  0%, 100% { box-shadow: 0 0 20px -2px rgba(246, 197, 68, 0.45), 0 0 55px -10px rgba(246, 197, 68, 0.25); }
-  50% { box-shadow: 0 0 30px 0 rgba(246, 197, 68, 0.65), 0 0 78px -8px rgba(232, 168, 56, 0.35); }
+/* ── glow ปุ่ม/จุดเด่น = starlight halo ── */
+@keyframes nexus-pulse {
+  0%, 100% { box-shadow: 0 0 18px -4px rgba(240, 180, 41, 0.4); }
+  50% { box-shadow: 0 0 28px -2px rgba(240, 180, 41, 0.6); }
 }
-.kru-pulse { animation: kru-pulse 2.8s ease-in-out infinite; }
+.nexus-pulse { animation: nexus-pulse 3s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .kru-scan, .kru-pulse { animation: none; }
-  .kru-scan { display: none; }
+  .nexus-twinkle, .nexus-pulse { animation: none; }
 }

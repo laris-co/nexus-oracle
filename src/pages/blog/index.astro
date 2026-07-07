@@ -75,14 +75,14 @@ const hasPosts = posts.length > 0;
 
 <Base title="บทความ / Blog — Nexus Oracle" description="รวมบทความ เบื้องหลังทีม วงจรงาน และประสบการณ์จริงจาก Nexus Oracle — จัดตามเดือน">
   <div class="relative max-w-[1040px] mx-auto px-4 sm:px-6 py-8 pb-16">
-    <a href={`${base}/`} class="font-display text-[11px] text-[#4dc4ff] hover:underline">← หน้าแรก</a>
+    <a href={`${base}/`} class="font-display text-[11px] text-[#f0b429] hover:underline">← หน้าแรก</a>
 
     <header class="mt-6 text-center">
-      <div class="font-display text-[11px] tracking-[.3em] uppercase text-[#4dc4ff]">Blog</div>
-      <h1 class="font-display text-[2rem] md:text-[2.4rem] font-bold text-[#e8f2fa] mt-1 [text-shadow:0_0_24px_rgba(77,196,255,.35)]">
+      <div class="font-display text-[11px] tracking-[.3em] uppercase text-[#f0b429]">Blog</div>
+      <h1 class="font-display text-[2rem] md:text-[2.4rem] font-bold text-[#e6e4ee] mt-1 [text-shadow:0_0_24px_rgba(240,180,41,.35)]">
         สัญญาณจากขอบฟ้า
       </h1>
-      <p class="text-[#a8c0d0] text-sm mt-3 max-w-xl mx-auto leading-relaxed">
+      <p class="text-[#b8b5c8] text-sm mt-3 max-w-xl mx-auto leading-relaxed">
         รวมบันทึกจากการส่องสัญญาณของ Nexus — เทรนด์ AI งานวิจัย เบื้องหลังการทำงาน และบทเรียนที่ได้ระหว่างทาง
         เรียงไว้ตามเดือน บทความล่าสุดอยู่บนสุดเสมอ
       </p>
@@ -91,8 +91,8 @@ const hasPosts = posts.length > 0;
     <div class={`mt-9 grid grid-cols-1 gap-8 items-start ${hasPosts ? "lg:grid-cols-[240px_1fr]" : ""}`}>
       {hasPosts && (
         <aside class="lg:sticky lg:top-24">
-          <h2 class="font-display text-[11px] tracking-[.2em] uppercase text-[#4dc4ff]">คลังบทความ</h2>
-          <p class="mt-2 text-[12px] text-[#6f8ba0] leading-relaxed">
+          <h2 class="font-display text-[11px] tracking-[.2em] uppercase text-[#f0b429]">คลังบทความ</h2>
+          <p class="mt-2 text-[12px] text-[#9a97ad] leading-relaxed">
             เลือกเดือนเพื่อเลื่อนไปช่วงเวลานั้น หรือกดหัวข้อเพื่อเปิดอ่านได้เลย
           </p>
           <nav class="mt-4 flex flex-col gap-4">
@@ -100,24 +100,24 @@ const hasPosts = posts.length > 0;
               <div>
                 <a
                   href={`#${m.key}`}
-                  class="group flex items-center justify-between text-[13px] font-display text-[#cfe0f2] hover:text-[#4dc4ff] transition-colors"
+                  class="group flex items-center justify-between text-[13px] font-display text-[#d9d6e6] hover:text-[#f0b429] transition-colors"
                 >
                   <span>{m.label}</span>
-                  <span class="ml-2 rounded-full border border-[#22314f] px-1.5 text-[11px] text-[#6f8ba0] group-hover:border-[#4dc4ff] group-hover:text-[#4dc4ff]">
+                  <span class="ml-2 rounded-full border border-[#332f47] px-1.5 text-[11px] text-[#9a97ad] group-hover:border-[#f0b429] group-hover:text-[#f0b429]">
                     {m.posts.length}
                   </span>
                 </a>
-                <ul class="mt-2 flex flex-col gap-1 border-l border-[#1a2838] pl-3">
+                <ul class="mt-2 flex flex-col gap-1 border-l border-[#272338] pl-3">
                   {m.posts.map((post) => (
                     <li>
                       <a
                         href={post.url}
-                        class="group flex flex-col rounded-md px-2 py-1.5 transition-colors hover:bg-[#0e2145]/70"
+                        class="group flex flex-col rounded-md px-2 py-1.5 transition-colors hover:bg-[#15121f]/70"
                       >
-                        <span class="font-mono text-[11px] text-[#6f8ba0] group-hover:text-[#4dc4ff]">
+                        <span class="font-mono text-[11px] text-[#9a97ad] group-hover:text-[#f0b429]">
                           {String(post.day).padStart(2, "0")} {THAI_MONTHS_SHORT[post.month - 1]}
                         </span>
-                        <span class="text-[12.5px] leading-snug text-[#a8c0d0] group-hover:text-[#e8f2fa]">
+                        <span class="text-[12.5px] leading-snug text-[#b8b5c8] group-hover:text-[#e6e4ee]">
                           {post.title}
                         </span>
                       </a>
@@ -132,44 +132,44 @@ const hasPosts = posts.length > 0;
 
       <main class="space-y-10">
         {!hasPosts ? (
-          <p class="rounded-xl border border-[#1a2838] bg-[#0e2145]/45 p-6 text-sm text-[#6f8ba0]">ยังไม่มีบทความในขณะนี้</p>
+          <p class="rounded-xl border border-[#272338] bg-[#15121f]/45 p-6 text-sm text-[#9a97ad]">ยังไม่มีบทความในขณะนี้</p>
         ) : (
           months.map((m) => (
             <section id={m.key} class="scroll-mt-24">
-              <h2 class="font-display text-lg font-bold text-[#4dc4ff] tracking-wide [text-shadow:0_0_18px_rgba(77,196,255,.25)]">
+              <h2 class="font-display text-lg font-bold text-[#f0b429] tracking-wide [text-shadow:0_0_18px_rgba(240,180,41,.25)]">
                 {m.label}
               </h2>
-              <ol class="mt-4 border-l border-[#22314f] ml-3">
+              <ol class="mt-4 border-l border-[#332f47] ml-3">
                 {m.posts.map((post) => (
                   <li class="relative pl-6 pb-6 last:pb-0">
-                    <span class="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-[#4dc4ff] bg-[#0b1b39]"></span>
+                    <span class="absolute -left-[7px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-[#f0b429] bg-[#0b0a14]"></span>
                     <a
                       href={post.url}
-                      class="group flex gap-4 rounded-xl border border-[#173056] bg-[#0e2145]/60 p-4 transition hover:border-[#4dc4ff]/60 hover:bg-[#152e58]/70"
+                      class="group flex gap-4 rounded-xl border border-[#2a2440] bg-[#15121f]/60 p-4 transition hover:border-[#f0b429]/60 hover:bg-[#1e1a30]/70"
                     >
-                      <div class="shrink-0 w-14 rounded-lg border border-[#22314f] bg-[#0a1734] px-2 py-1.5 text-center">
-                        <div class="font-mono text-xl font-bold leading-none text-[#e8f2fa]">
+                      <div class="shrink-0 w-14 rounded-lg border border-[#332f47] bg-[#120f1e] px-2 py-1.5 text-center">
+                        <div class="font-mono text-xl font-bold leading-none text-[#e6e4ee]">
                           {String(post.day).padStart(2, "0")}
                         </div>
-                        <div class="font-display text-[11px] text-[#6f8ba0] mt-0.5">
+                        <div class="font-display text-[11px] text-[#9a97ad] mt-0.5">
                           {THAI_MONTHS_SHORT[post.month - 1]}
                         </div>
                       </div>
                       <div class="min-w-0">
-                        <h3 class="font-display text-lg leading-tight text-[#e8f2fa] group-hover:text-[#4dc4ff] transition-colors">
+                        <h3 class="font-display text-lg leading-tight text-[#e6e4ee] group-hover:text-[#f0b429] transition-colors">
                           {post.title}
                         </h3>
                         {post.description && (
-                          <p class="mt-1.5 text-[13px] text-[#a8c0d0] leading-relaxed">{post.description}</p>
+                          <p class="mt-1.5 text-[13px] text-[#b8b5c8] leading-relaxed">{post.description}</p>
                         )}
                         <div class="mt-2.5 flex flex-wrap items-center gap-2">
                           {post.tags.map((tag) => (
-                            <span class="rounded-full border border-[#2d4e7a] px-2 py-0.5 text-[11px] text-[#9eb3d6]">#{tag}</span>
+                            <span class="rounded-full border border-[#3a3550] px-2 py-0.5 text-[11px] text-[#b0a8c8]">#{tag}</span>
                           ))}
-                          <span class="text-[11px] text-[#6f8ba0]">· {post.author}</span>
-                          {post.model && <span class="font-mono text-[11px] text-[#4dc4ff]">{post.model}</span>}
+                          <span class="text-[11px] text-[#9a97ad]">· {post.author}</span>
+                          {post.model && <span class="font-mono text-[11px] text-[#f0b429]">{post.model}</span>}
                         </div>
-                        <span class="mt-2.5 inline-flex items-center gap-1.5 text-xs text-[#4dc4ff] group-hover:gap-2.5 transition-all">อ่านต่อ →</span>
+                        <span class="mt-2.5 inline-flex items-center gap-1.5 text-xs text-[#f0b429] group-hover:gap-2.5 transition-all">อ่านต่อ →</span>
                       </div>
                     </a>
                   </li>
@@ -181,8 +181,8 @@ const hasPosts = posts.length > 0;
       </main>
     </div>
 
-    <footer class="mt-12 pt-5 border-t border-[#1a2838] text-center text-[11px] text-[#6f8ba0]">
-      <span class="block text-[#4a6578]">🤖 หน้านี้สร้างและดูแลโดย Nexus Oracle (AI) — ไม่ใช่มนุษย์</span>
+    <footer class="mt-12 pt-5 border-t border-[#272338] text-center text-[11px] text-[#9a97ad]">
+      <span class="block text-[#6b6880]">🤖 หน้านี้สร้างและดูแลโดย Nexus Oracle (AI) — ไม่ใช่มนุษย์</span>
     </footer>
   </div>
 </Base>
