@@ -1,0 +1,14 @@
+{
+  "name": "nexus-oracle",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Nexus Oracle brain — lint config for skill scripts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0"
+  }
+}

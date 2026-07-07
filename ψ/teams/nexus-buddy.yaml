@@ -1,0 +1,33 @@
+# nexus-buddy — Codex buddy for nexus-oracle
+# Pattern: charter yaml + maw team up/down (omx builds the layout → no HUD flicker)
+# Report to lead: maw hey 13-nexus:nexus
+# Format matches kru32-team.yaml (proven no-flicker via maw team up)
+
+name: nexus-buddy
+project: laris-co/nexus-oracle
+session: 13-nexus
+
+engines:
+  omx-2: 'OMX_AUTO_UPDATE=0 CODEX_HOME=~/.codex-team/2 omx --direct --madmax'
+
+members:
+  # Window 1: nexus (lead + builder)
+  - role: lead
+    name: nexus
+    engine: claude
+
+  - role: builder
+    name: codex-buddy
+    engine: omx-2
+    worktree: true
+    branch: agents/codex-buddy
+    prompt: |
+      Coder codex-buddy — build web artifacts for Nexus Oracle.
+      SCOPE: src/ , public/ , astro.config.mjs , .github/workflows/ , package.json
+      READ-ONLY: ψ/ , CLAUDE.md , Makefile , .gitignore
+      RULES:
+        - NEW files only — do not modify lead's files unless told
+        - Stay in worktree (agents/codex-buddy) — never cd out
+        - Build gate: bun run build must pass before reporting done
+        - Report to lead: maw hey 13-nexus:nexus
+      REPORT: ACK on receive · BLOCKER if stuck · DONE + build status when finished

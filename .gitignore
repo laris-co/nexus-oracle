@@ -6,3 +6,9 @@
 ψ/active/
 ψ/learn/
 ψ/memory/logs/
+
+# JS tooling
+node_modules/
+
+# Codex buddy worktrees
+agents/
