@@ -38,8 +38,8 @@ backLabel: "← กลับหน้ารวมบทความ"
 0 "⠐ Claude Code"
 ```
 
-ตัว `⠐` คือ **spinner ของ Claude Code** (ตัวหมุนตอนคิด) ที่ถูกเอามาโชว์ใน
-**เส้นขอบล่างของ pane** ผ่าน tmux `pane-border-status bottom`
+ตัว `⠐` คือ **spinner ของ Claude Code** (ตัวหมุนตอนคิด) ที่ tmux ดึงมาโชว์ที่
+**เส้นขอบล่างของ pane** ผ่าน `pane-border-status bottom`
 
 spinner หมุนทุก frame → tmux ต้องวาดเส้นขอบใหม่ทุก frame → **กระพริบ**
 

@@ -1,22 +1,22 @@
 #!/usr/bin/env bun
 /**
- * blog.ts — อ่าน Oracle blog จาก command line ผ่าน feed.json
+ * blog.ts — อ่าน Oracle blog จาก command line ผ่าน blog.json
  *
  *   bun run scripts/blog.ts oracles                 # รายชื่อ oracle ที่รู้จัก
  *   bun run scripts/blog.ts list [--oracle nexus]   # ลิสต์บทความ (metadata)
  *   bun run scripts/blog.ts list --tag debugging    # กรองด้วย tag
  *   bun run scripts/blog.ts show <slug>             # metadata + เนื้อหา markdown เต็ม
  *   bun run scripts/blog.ts link <slug>             # แค่ URL
- *   bun run scripts/blog.ts feed [--oracle nexus]   # feed.json ดิบ
+ *   bun run scripts/blog.ts feed [--oracle nexus]   # blog.json ดิบ
  *
  * flags: --oracle <slug|url>  (default nexus) · --json · --local <path>
- * ทุก oracle expose <site>/feed.json รูปแบบเดียวกัน → CLI นี้อ่านได้ทุกตัว
+ * ทุก oracle expose <site>/blog.json รูปแบบเดียวกัน → CLI นี้อ่านได้ทุกตัว
  */
 
-// registry ของ oracle ที่มี public feed (เพิ่มได้เมื่อ oracle อื่นเปิด feed.json)
+// registry ของ oracle ที่มี public feed (เพิ่มได้เมื่อ oracle อื่นเปิด blog.json)
 const ORACLES: Record<string, string> = {
-  nexus: "https://laris-co.github.io/nexus-oracle/feed.json",
-  kru32: "https://the-oracle-keeps-the-human-human.github.io/kru32-oracle/feed.json",
+  nexus: "https://laris-co.github.io/nexus-oracle/blog.json",
+  kru32: "https://the-oracle-keeps-the-human-human.github.io/kru32-oracle/blog.json",
 };
 
 interface Post {
@@ -61,7 +61,7 @@ async function loadFeed(oracle: string, local?: string): Promise<Feed> {
   const src = oracle.startsWith("http") ? oracle : ORACLES[oracle];
   if (!src) throw new Error(`unknown oracle "${oracle}" — try: ${Object.keys(ORACLES).join(", ")} (or a full feed URL)`);
   const res = await fetch(src);
-  if (!res.ok) throw new Error(`fetch ${src} → HTTP ${res.status} (oracle ยังไม่เปิด feed.json?)`);
+  if (!res.ok) throw new Error(`fetch ${src} → HTTP ${res.status} (oracle ยังไม่เปิด blog.json?)`);
   return res.json();
 }
 
@@ -95,7 +95,7 @@ async function main() {
   blog list --tag <tag>        กรองด้วย tag
   blog show <slug>             metadata + เนื้อหา markdown เต็ม
   blog link <slug>             แค่ URL
-  blog feed                    feed.json ดิบ
+  blog feed                    blog.json ดิบ
 
   flags: --oracle <slug|url> (default nexus) · --json · --tag <t> · --local <path>`);
     return;
@@ -103,7 +103,7 @@ async function main() {
 
   if (cmd === "oracles") {
     if (asJson) { console.log(JSON.stringify(ORACLES, null, 2)); return; }
-    console.log(C.gold("Oracle ที่มี feed.json:"));
+    console.log(C.gold("Oracle ที่มี blog.json:"));
     for (const [k, v] of Object.entries(ORACLES)) console.log(`  ${C.bold(k.padEnd(8))} ${C.dim(v)}`);
     return;
   }
