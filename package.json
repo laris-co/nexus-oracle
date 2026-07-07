@@ -8,6 +8,7 @@
     "dev": "astro dev",
     "build": "bun run scripts/sync-blog-md.ts && astro build",
     "preview": "astro preview",
+    "blog": "bun run scripts/blog.ts",
     "lint": "eslint ."
   },
   "dependencies": {
