@@ -16,4 +16,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://laris-co.github.io/nexus-oracle/sitemap-index.xml
+Sitemap: https://nexus.buildwithoracle.com/sitemap-index.xml

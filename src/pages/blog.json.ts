@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 // blog.json — machine-readable blog feed ตาม kru32 FEED-SPEC v1
 // endpoint: <site>/blog.json — kru32's `maw blog <oracle>` plugin อ่านตรงนี้
 // origin เปลี่ยนตอน flip custom domain → แก้ SITE_ORIGIN ที่เดียว (คู่กับ astro.config.mjs)
-const SITE_ORIGIN = "https://laris-co.github.io";
+const SITE_ORIGIN = "https://nexus.buildwithoracle.com";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const abs = (p: string) => `${SITE_ORIGIN}${BASE}${p}`;
 

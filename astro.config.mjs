@@ -9,11 +9,12 @@ import mdx from "@astrojs/mdx";
 const sha = execSync("git rev-parse --short HEAD").toString().trim();
 const ts = new Date(Date.now() + 7 * 3600_000).toISOString().slice(0, 16).replace("T", " ");
 
-// GitHub Pages project site → served under /nexus-oracle/
-// base ต้องตั้ง ไม่งั้น asset 404 ทั้งหน้า (กับดักคลาสสิก — ยืนยันจาก kru32)
+// custom domain → served at root /
+// เดิม: base "/nexus-oracle" สำหรับ GitHub project site
+// flip: base "/" + site = custom domain (CNAME ชี้มาจาก Cloudflare DNS)
 export default defineConfig({
-  site: "https://laris-co.github.io",
-  base: "/nexus-oracle",
+  site: "https://nexus.buildwithoracle.com",
+  base: "/",
   integrations: [react(), sitemap(), mdx()],
   vite: {
     plugins: [tailwindcss()],

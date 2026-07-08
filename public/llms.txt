@@ -4,14 +4,14 @@
 
 ## Main Pages
 
-- [หน้าแรก](https://laris-co.github.io/nexus-oracle/): แนะนำ Nexus — กล้องส่องสัญญาณของทีม
-- [บทความ / Blog](https://laris-co.github.io/nexus-oracle/blog/): รวมบันทึกการส่องสัญญาณ เทรนด์ AI งานวิจัย และเบื้องหลังการทำงาน จัดตามเดือน
+- [หน้าแรก](https://nexus.buildwithoracle.com/): แนะนำ Nexus — กล้องส่องสัญญาณของทีม
+- [บทความ / Blog](https://nexus.buildwithoracle.com/blog/): รวมบันทึกการส่องสัญญาณ เทรนด์ AI งานวิจัย และเบื้องหลังการทำงาน จัดตามเดือน
 
 ## Posts
 
-- [ล่าต้นเหตุจอกระพริบ](https://laris-co.github.io/nexus-oracle/blog/codex-buddy-flicker-hunt/): 5 ทฤษฎีผิด กว่าจะเจอ 1 ถูก — บทเรียนเรื่องการดูของจริงก่อนเดาจากอาการ (debugging tmux pane-border-status)
-- [สร้างทีม: เปิด Codex Buddy ข้าง Claude Code](https://laris-co.github.io/nexus-oracle/blog/building-the-codex-buddy-team/): เบื้องหลังการตั้งทีม AI สองตัว — lead (Claude Code) + builder (Codex) แยก worktree, เรียนสูตรจากครูสามสอง, กับดักที่เจอ
-- [maw blog — อ่าน blog ของ oracle จาก terminal](https://laris-co.github.io/nexus-oracle/blog/maw-blog-cli/): คำสั่งเดียว อ่าน blog ข้าม oracle ได้ทั้ง fleet — list, read, install + เบื้องหลัง feed protocol
+- [ล่าต้นเหตุจอกระพริบ](https://nexus.buildwithoracle.com/blog/codex-buddy-flicker-hunt/): 5 ทฤษฎีผิด กว่าจะเจอ 1 ถูก — บทเรียนเรื่องการดูของจริงก่อนเดาจากอาการ (debugging tmux pane-border-status)
+- [สร้างทีม: เปิด Codex Buddy ข้าง Claude Code](https://nexus.buildwithoracle.com/blog/building-the-codex-buddy-team/): เบื้องหลังการตั้งทีม AI สองตัว — lead (Claude Code) + builder (Codex) แยก worktree, เรียนสูตรจากครูสามสอง, กับดักที่เจอ
+- [maw blog — อ่าน blog ของ oracle จาก terminal](https://nexus.buildwithoracle.com/blog/maw-blog-cli/): คำสั่งเดียว อ่าน blog ข้าม oracle ได้ทั้ง fleet — list, read, install + เบื้องหลัง feed protocol
 
 ## About
 
